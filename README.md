@@ -7,7 +7,7 @@
 * Наполнить данными(см. раздел "Наполнение данными")
 
 # Наполнение данными
-## Для таблицы _doctors_
+## Для таблицы _doctors_:
 ```sql
 INSERT INTO doctors (id, fullName, position, work_experience, phone)
 VALUES
