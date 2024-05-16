@@ -1,13 +1,13 @@
 # База данных для клиники протезирования
 ![img](https://github.com/Anton70772/prosthesis/blob/main/prosthesis.png)
 > [!IMPORTANT]
-> Как развернуть дамп бд у себя:
+> ## Как развернуть дамп бд у себя:
 * Скачать файл _prothesis.sql_
 * Выполнить
 * Наполнить данными [(см. раздел Наполнение данными)](#наполнение-данными)
 
 > [!IMPORTANT]
-> # В бд есть 2 роли:
+> ## В бд есть 2 роли:
 ### *Администратор*:
 
 ```sql
@@ -18,7 +18,7 @@ CREATE ROLE admin;
 GRANT ALL PRIVILEGES ON prothesis.* TO admin;
 ```
 
-## *Мед. персонал*:
+### *Мед. персонал*:
 
 ```sql
 -- Создание роли для медицинского персонала
@@ -33,7 +33,7 @@ GRANT SELECT ON prothesis.appointments TO medical_staff;
 ```
 
 # Наполнение данными
-## Для таблицы _doctors_:
+### Для таблицы _doctors_:
 ```sql
 INSERT INTO doctors (id, fullName, position, work_experience, phone)
 VALUES
@@ -49,7 +49,7 @@ VALUES
 ('Федорова Татьяна Сергеевна', 'Ассистент хирурга', 13, '+71234567899');
 ```
 
-## Для таблицы _services_:
+### Для таблицы _services_:
 ```sql
 INSERT INTO services (id, name, description, price, required_documents) 
 VALUES 
@@ -65,7 +65,7 @@ VALUES
 ('Установка кибернетического протеза сердца "Синтетический Эндокринный Сердечный Агрегат" с последующим мониторингом состояния и дистанционным управлением.', 'Хирургическая процедура установки кибернетического протеза сердца с последующим мониторингом и управлением через сеть.', 30000.00, 'Удостоверение личности, медицинская карта');
 ```
 
-## Для таблицы _prosthetics_:
+### Для таблицы _prosthetics_:
 ```sql
 INSERT INTO prosthetics (id, product_name, manufacturer, price, description) 
 VALUES 
@@ -81,7 +81,7 @@ VALUES
 ('Кибернетический слуховой аппарат: "AudioEnhance Bionic Ear"', 'Picus Group', 31000.00, 'Улучшает слух и фильтрует внешние звуки для комфортного восприятия окружающего мира.');
 ```
 
-## Для таблицы _services_reports_:
+### Для таблицы _services_reports_:
 ```sql
 INSERT INTO services_reports (date, services, notes, doctors_id, services_id)
 VALUES 
@@ -97,7 +97,7 @@ VALUES
 ('2024-12-23', 'Аугментация конечности "Титановый Рукав"', 'Наблюдается значительное увеличение мобильности после процедуры.', 1, 8);
 ```
 
-## Для таблицы _orders_:
+### Для таблицы _orders_:
 ```sql
 INSERT INTO orders (order_name, price, count, date, status, doctors_id, prosthetics_id)
 VALUES
@@ -109,7 +109,7 @@ VALUES
 ('Бионическая рука: "TitanArm Mk.II"', 36000.00, 1, '2024-04-25', 'Создан', 7, 9);
 ```
 
-## Для таблицы _patients_:
+### Для таблицы _patients_:
 ```sql
 INSERT INTO patients (id, fullName, birthday, gender, phone, email) 
 VALUES 
