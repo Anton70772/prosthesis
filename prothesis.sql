@@ -182,7 +182,7 @@ CREATE TABLE `patients` (
   `phone` char(12) NOT NULL,
   `email` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -191,7 +191,7 @@ CREATE TABLE `patients` (
 
 LOCK TABLES `patients` WRITE;
 /*!40000 ALTER TABLE `patients` DISABLE KEYS */;
-INSERT INTO `patients` VALUES (1,'Сидоров Артем Николаевич','2001-08-15','М','+71234567893','artem@yandex.ru'),(2,'Петрова Мария Дмитриевна','1998-03-20','Ж','+71294567893','maria@yandex.ru'),(3,'Козлов Александр Александрович','1995-12-28','М','+71231567893','alexander@yandex.ru');
+INSERT INTO `patients` VALUES (1,'Сидоров Артем Николаевич','2001-08-15','М','+71234567893','artem@yandex.ru'),(2,'Петрова Мария Дмитриевна','1998-03-20','Ж','+71294567893','maria@yandex.ru'),(3,'Козлов Александр Александрович','1995-12-28','М','+71231567893','alexander@yandex.ru'),(4,'Иванов Иван Иванович','2005-07-07','М','+79807359872','ivanov@yandex.ru');
 /*!40000 ALTER TABLE `patients` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -286,21 +286,24 @@ INSERT INTO `services_reports` VALUES (1,'2024-04-15 00:00:00','Протеза �
 UNLOCK TABLES;
 
 --
--- Temporary view structure for view `view_complete_services`
+-- Temporary view structure for view `view_operations`
 --
 
-DROP TABLE IF EXISTS `view_complete_services`;
-/*!50001 DROP VIEW IF EXISTS `view_complete_services`*/;
+DROP TABLE IF EXISTS `view_operations`;
+/*!50001 DROP VIEW IF EXISTS `view_operations`*/;
 SET @saved_cs_client     = @@character_set_client;
 /*!50503 SET character_set_client = utf8mb4 */;
-/*!50001 CREATE VIEW `view_complete_services` AS SELECT 
- 1 AS `report_id`,
+/*!50001 CREATE VIEW `view_operations` AS SELECT 
  1 AS `date`,
  1 AS `doctor`,
  1 AS `patient`,
  1 AS `service`,
  1 AS `notes`*/;
 SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping events for database 'prothesis'
+--
 
 --
 -- Dumping routines for database 'prothesis'
@@ -363,58 +366,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `AddNewPatient` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `AddNewPatient`(
-    IN p_fullName VARCHAR(255),
-    IN p_birthday DATE,
-    IN p_gender CHAR(1),
-    IN p_phone CHAR(12),
-    IN p_email VARCHAR(100)
-)
-BEGIN
-    DECLARE v_patientExists INT;
-    DECLARE EXIT HANDLER FOR SQLEXCEPTION
-    BEGIN
-        ROLLBACK;
-        GET DIAGNOSTICS CONDITION 1 @p1 = RETURNED_SQLSTATE, @p2 = MESSAGE_TEXT;
-        SELECT CONCAT('Error occurred: ', @p1, ': ', @p2);
-    END;
-    
-    START TRANSACTION;
-    
-    SELECT COUNT(*) INTO v_patientExists 
-    FROM Patients 
-    WHERE fullName = p_fullName 
-    AND birthday = p_birthday 
-    AND gender = p_gender 
-    AND phone = p_phone 
-    AND email = p_email;
-    
-    IF v_patientExists = 0 THEN
-        INSERT INTO Patients (fullName, birthday, gender, phone, email)
-        VALUES (p_fullName, p_birthday, p_gender, p_phone, p_email);
-        
-        COMMIT;
-        SELECT 'Клиент успешно добавлен';
-    ELSE
-        ROLLBACK;
-        SELECT 'Клиент уже существует';
-    END IF;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `NewPatient` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -469,10 +420,10 @@ DELIMITER ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
--- Final view structure for view `view_complete_services`
+-- Final view structure for view `view_operations`
 --
 
-/*!50001 DROP VIEW IF EXISTS `view_complete_services`*/;
+/*!50001 DROP VIEW IF EXISTS `view_operations`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
@@ -481,7 +432,7 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `view_complete_services` AS select `services_reports`.`id` AS `report_id`,`services_reports`.`date` AS `date`,`doctors`.`fullName` AS `doctor`,`patients`.`fullName` AS `patient`,`services`.`name` AS `service`,`services_reports`.`notes` AS `notes` from ((((`services_reports` join `doctors` on((`services_reports`.`doctors_id` = `doctors`.`id`))) join `appointments` on((`appointments`.`doctors_id` = `doctors`.`id`))) join `patients` on((`appointments`.`patients_id` = `patients`.`id`))) join `services` on((`services_reports`.`services_id` = `services`.`id`))) */;
+/*!50001 VIEW `view_operations` AS select `services_reports`.`date` AS `date`,`doctors`.`fullName` AS `doctor`,`patients`.`fullName` AS `patient`,`services`.`name` AS `service`,`services_reports`.`notes` AS `notes` from (((`services_reports` join `doctors` on((`services_reports`.`doctors_id` = `doctors`.`id`))) join `services` on((`services_reports`.`services_id` = `services`.`id`))) join `patients` on((`services`.`id` = `patients`.`id`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -495,4 +446,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-02 12:56:56
+-- Dump completed on 2024-05-16 10:36:55
