@@ -11,25 +11,47 @@
 ### *Администратор*:
 
 ```sql
--- Создание роли для администратора
-CREATE ROLE admin;
+-- Создание роли Администратор
+CREATE ROLE IF NOT EXISTS admin; 
 
--- Предоставление полных прав для роли администратора
+-- Предоставление полных прав администратору на схему housing
 GRANT ALL PRIVILEGES ON prothesis.* TO admin;
+
+-- Создание пользователя
+CREATE USER IF NOT EXISTS 'admin'@'localhost' IDENTIFIED BY 'theAdmin777';
+
+-- Назначение роли пользователю
+GRANT admin TO 'admin'@'localhost';
+
+-- Активация роли для пользователя
+SET DEFAULT ROLE admin TO 'admin'@'localhost';
+
+-- Применение изменений прав
+FLUSH PRIVILEGES;
 ```
 
 ### *Мед. персонал*:
 
 ```sql
 -- Создание роли для медицинского персонала
-CREATE ROLE medical_staff;
+CREATE ROLE IF NOT EXISTS medical_staff; 
 
--- Предоставление прав доступа для роли медицинского персонала
+-- Присвоение прав
 GRANT SELECT, INSERT, UPDATE, DELETE ON prothesis.patients TO medical_staff;
 GRANT SELECT, INSERT, UPDATE, DELETE ON prothesis.doctors TO medical_staff;
 GRANT SELECT, INSERT, UPDATE, DELETE ON prothesis.services_reports TO medical_staff;
 GRANT SELECT, INSERT ON prothesis.orders TO medical_staff;
 GRANT SELECT ON prothesis.appointments TO medical_staff;
+
+-- Создание пользователя
+CREATE USER IF NOT EXISTS 'medic'@'localhost' IDENTIFIED BY 'theMedic777';
+
+-- Назначение роли пользователю
+GRANT medical_staff TO 'medic'@'localhost';
+-- Активация роли для пользователя
+SET DEFAULT ROLE medical_staff TO 'medic'@'localhost';
+-- Применение изменений прав
+FLUSH PRIVILEGES;
 ```
 
 # Наполнение данными
