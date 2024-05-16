@@ -6,6 +6,32 @@
 * Выполнить
 * Наполнить данными [(см. раздел Наполнение данными)](#наполнение-данными)
 
+> [!IMPORTANT]
+> В бд есть 2 роли:
+## *Администратор*:
+
+```sql
+-- Создание роли для администратора
+CREATE ROLE admin;
+
+-- Предоставление полных прав для роли администратора
+GRANT ALL PRIVILEGES ON prothesis.* TO admin;
+```
+
+## *Мед. персонал*:
+
+```sql
+-- Создание роли для медицинского персонала
+CREATE ROLE medical_staff;
+
+-- Предоставление прав доступа для роли медицинского персонала
+GRANT SELECT, INSERT, UPDATE, DELETE ON prothesis.patients TO medical_staff;
+GRANT SELECT, INSERT, UPDATE, DELETE ON prothesis.doctors TO medical_staff;
+GRANT SELECT, INSERT, UPDATE, DELETE ON prothesis.services_reports TO medical_staff;
+GRANT SELECT, INSERT ON prothesis.orders TO medical_staff;
+GRANT SELECT ON prothesis.appointments TO medical_staff;
+```
+
 # Наполнение данными
 ## Для таблицы _doctors_:
 ```sql
