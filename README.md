@@ -117,3 +117,54 @@ VALUES
 (2, 'Петрова Мария Дмитриевна', '1998-03-20', 'Ж', '+71294567893', 'maria@yandex.ru'),
 (3, 'Козлов Александр Александрович', '1995-12-28', 'М', '+71231567893', 'alexander@yandex.ru');
 ```
+
+### Для таблицы _appointments_:
+```sql
+INSERT INTO appointments (dateTime, room, status, patients_id, doctors_id, services_id)
+VALUES
+('2024-05-17 10:00:00', 2, 'Прием завершен', 2, 2, 2),
+('2024-04-11 11:00:00', 3, 'Запись отменена', 1, 3, 3),
+('2024-06-18 12:00:00', 4, 'Запись назначена', 3, 4, 4),
+('2024-07-29 13:00:00', 5, 'Прием завершен', 1, 5, 5),
+('2024-08-31 14:00:00', 6, 'Запись назначена', 3, 6, 6),
+('2024-05-15 15:00:00', 7, 'Запись отменена', 2, 7, 7);
+```
+
+> [!WARNING]
+> Следующие запросы необходимо выполнять только от роли администратора.
+
+## Проверка бд на работоспособность:
+### 1 Запрос на получение списка врачей и услуг, которые они предоставляют:
+```sql
+SELECT d.fullName AS Doctor_Name, s.name AS Service_Name
+FROM doctors d
+JOIN services s ON d.id = s.doctors_id;
+```
+
+### 2 Запрос на получение списка врачей с наибольшим опытом работы и их должностей:
+```sql
+SELECT fullName AS Doctor_Name, position AS Doctor_Position, work_experience_start_day AS Experience
+FROM doctors
+WHERE work_experience_start_day = (SELECT MAX(work_experience_start_day) FROM doctors);
+```
+
+### 3 Запрос на получение списка назначений с информацией о пациентах и врачах:
+```sql
+SELECT a.id AS Appointment_ID, p.fullName AS Patient_Name, d.fullName AS Doctor_Name
+FROM appointments a
+JOIN patients p ON a.patients_id = p.id
+JOIN doctors d ON a.doctors_id = d.id;
+```
+
+### 4 Запрос на получение средней цены протезов по производителям:
+```sql
+SELECT prosthetics.manufacturer, AVG(prosthetics.price) AS average_price
+FROM prosthetics
+GROUP BY prosthetics.manufacturer;
+```
+
+### 5 Запрос на получение общей стоимости всех заказов:
+```sql
+SELECT SUM(o.price * o.count) AS Total_Order_Price
+FROM orders o;
+```
