@@ -160,21 +160,21 @@ VALUES
 > ### Следующие запросы необходимо выполнять только от роли администратора.
 
 ## Проверка бд на работоспособность:
-### 1 Запрос на получение списка врачей и услуг, которые они предоставляют:
+### Запрос на получение списка врачей и услуг, которые они предоставляют:
 ```sql
 SELECT d.fullName AS Doctor_Name, s.name AS Service_Name
 FROM doctors d
 JOIN services s ON d.id = s.doctors_id;
 ```
 
-### 2 Запрос на получение списка врачей с наибольшим опытом работы и их должностей:
+### Запрос на получение списка врачей с наибольшим опытом работы и их должностей:
 ```sql
 SELECT fullName AS Doctor_Name, position AS Doctor_Position, work_experience_start_day AS Experience
 FROM doctors
 WHERE work_experience_start_day = (SELECT MAX(work_experience_start_day) FROM doctors);
 ```
 
-### 3 Запрос на получение списка назначений с информацией о пациентах и врачах:
+### Запрос на получение списка назначений с информацией о пациентах и врачах:
 ```sql
 SELECT a.id AS Appointment_ID, p.fullName AS Patient_Name, d.fullName AS Doctor_Name
 FROM appointments a
@@ -182,15 +182,175 @@ JOIN patients p ON a.patients_id = p.id
 JOIN doctors d ON a.doctors_id = d.id;
 ```
 
-### 4 Запрос на получение средней цены протезов по производителям:
+### Запрос на получение средней цены протезов по производителям:
 ```sql
 SELECT prosthetics.manufacturer, AVG(prosthetics.price) AS average_price
 FROM prosthetics
 GROUP BY prosthetics.manufacturer;
 ```
 
-### 5 Запрос на получение общей стоимости всех заказов:
+### Запрос на получение общей стоимости всех заказов:
 ```sql
 SELECT SUM(o.price * o.count) AS Total_Order_Price
 FROM orders o;
+```
+
+## Представление которое отображает данные о проведенных операциях:
+```sql
+CREATE VIEW view_operations AS
+
+SELECT services_reports.date, 
+doctors.fullName AS doctor, 
+patients.fullName AS patient, 
+services.name AS service, 
+services_reports.notes
+
+FROM services_reports
+
+JOIN doctors ON services_reports.doctors_id = doctors.id
+
+JOIN services ON services_reports.services_id = services.id
+
+JOIN patients ON services.id = patients.id
+;
+```
+
+## Хранимая процедура для добавления нового клиента и проверка к ней:
+```sql
+DELIMITER $$
+
+CREATE PROCEDURE NewPatient(
+    IN p_fullName VARCHAR(255),
+    IN p_birthday DATE,
+    IN p_gender CHAR(1),
+    IN p_phone CHAR(12),
+    IN p_email VARCHAR(100)
+)
+BEGIN
+    DECLARE v_patientExists INT;
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        GET DIAGNOSTICS CONDITION 1 @p1 = RETURNED_SQLSTATE, @p2 = MESSAGE_TEXT;
+        SELECT CONCAT('Error occurred: ', @p1, ': ', @p2);
+    END;
+    
+    START TRANSACTION;
+    
+    SELECT COUNT(*) INTO v_patientExists 
+    FROM Patients 
+    WHERE fullName = p_fullName 
+    AND birthday = p_birthday 
+    AND gender = p_gender 
+    AND phone = p_phone 
+    AND email = p_email;
+    
+    IF v_patientExists = 0 THEN
+        INSERT INTO Patients (fullName, birthday, gender, phone, email)
+        VALUES (p_fullName, p_birthday, p_gender, p_phone, p_email);
+        
+        COMMIT;
+        SELECT 'Клиент успешно добавлен';
+    ELSE
+        ROLLBACK;
+        SELECT 'Клиент уже существует';
+    END IF;
+END $$
+
+DELIMITER ;
+```
+### Проверка:
+```sql
+call prosthesis.AddNewPatient('Иванов Иван Иванович', '2004-07-19', 'М', '+79308361724', 'ivanov@yandex.ru');
+```
+
+## Триггер для хранимой процедуры по добавлению клиента:
+```sql 
+DELIMITER $$
+
+CREATE TRIGGER DuplicateAppointments
+BEFORE INSERT ON appointments
+FOR EACH ROW
+BEGIN
+    DECLARE appointment_count INT;
+    
+    SELECT COUNT(*) INTO appointment_count
+    FROM appointments
+    WHERE dateTime = NEW.dateTime
+    AND doctors_id = NEW.doctors_id;
+    
+    IF appointment_count > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Запись уже существует';
+    END IF;
+END$$
+
+DELIMITER ;
+```
+
+## Хранимая процедура для записи на прием и проверка к ней:
+```sql 
+DELIMITER $$
+
+CREATE PROCEDURE addAppointment(
+    IN p_patient_id INT,
+    IN p_doctor INT,
+    IN p_service INT,
+    IN p_date DATETIME,
+    IN p_room INT
+)
+BEGIN
+    DECLARE appointment_id INT;
+    DECLARE error_message VARCHAR(255) DEFAULT NULL;
+
+    IF EXISTS (
+        SELECT * FROM appointments 
+        WHERE dateTime = p_date 
+        AND doctors_id = p_doctor
+    ) THEN
+        SET error_message = 'Вы не можете записаться на прием в это время, так как у данного врача уже есть запись.';
+    ELSE
+        INSERT INTO appointments (dateTime, room, status, patients_id, doctors_id, services_id)
+        VALUES (p_date, p_room, 'Запись назначена', p_patient_id, p_doctor, p_service);
+
+        SET appointment_id = LAST_INSERT_ID();
+    END IF;
+
+    IF error_message IS NOT NULL THEN
+        SELECT error_message AS Message;
+    ELSE
+        SELECT 'Вы успешно записались на прием' AS Message;
+    END IF;
+END $$
+
+DELIMITER ;
+```
+
+### Проверка:
+```sql 
+call prosthesis.addAppointment(3, 1, 3, '2024-04-25 14:10:00', 124);
+```
+
+## Функция ,которая считает общее количество приемов для определенного пациента и тестирование к неё:
+```sql 
+DELIMITER $$
+
+CREATE FUNCTION GetTotalAppointments(patient_id INT) RETURNS INT
+DETERMINISTIC
+BEGIN
+    DECLARE total_appointments INT;
+    
+    SELECT COUNT(*) INTO total_appointments
+    FROM appointments
+    WHERE patients_id = patient_id;
+    
+    RETURN total_appointments;
+END$$
+
+DELIMITER ;
+```
+
+### Тест:
+```sql 
+select prothesis.GetTotalAppointments(1);
 ```
