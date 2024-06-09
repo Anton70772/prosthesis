@@ -262,7 +262,7 @@ END $$
 
 DELIMITER ;
 ```
-### Проверка:
+### Вызов процедуры:
 ```sql
 call prosthesis.AddNewPatient('Иванов Иван Иванович', '2004-07-19', 'М', '+79308361724', 'ivanov@yandex.ru');
 ```
@@ -329,7 +329,7 @@ END $$
 DELIMITER ;
 ```
 
-### Проверка:
+### Вызов процедуры:
 ```sql 
 call prosthesis.addAppointment(3, 1, 3, '2024-04-25 14:10:00', 124);
 ```
