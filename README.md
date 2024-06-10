@@ -177,7 +177,7 @@ FROM doctors
 WHERE work_experience_start_day = (SELECT MAX(work_experience_start_day) FROM doctors);
 ```
 
-### Запрос на получение списка назначений с информацией о пациентах и врачах:
+### Запрос на получение записей с информацией о пациентах и врачах:
 ```sql
 SELECT a.id AS Appointment_ID, p.fullName AS Patient_Name, d.fullName AS Doctor_Name
 FROM appointments a
