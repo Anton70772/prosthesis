@@ -37,7 +37,7 @@ CREATE TABLE `appointments` (
   CONSTRAINT `fk_appointments_doctors1` FOREIGN KEY (`doctors_id`) REFERENCES `doctors` (`id`),
   CONSTRAINT `fk_appointments_patients1` FOREIGN KEY (`patients_id`) REFERENCES `patients` (`id`),
   CONSTRAINT `fk_appointments_services1` FOREIGN KEY (`services_id`) REFERENCES `services` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -46,35 +46,9 @@ CREATE TABLE `appointments` (
 
 LOCK TABLES `appointments` WRITE;
 /*!40000 ALTER TABLE `appointments` DISABLE KEYS */;
+INSERT INTO `appointments` VALUES (1,'2024-05-17 09:00:00',1,'Запись назначена',1,1,1),(2,'2024-05-17 10:00:00',2,'Прием завершен',2,2,2),(3,'2024-04-11 11:00:00',3,'Запись отменена',1,3,3),(4,'2024-06-18 12:00:00',4,'Запись назначена',3,4,4),(5,'2024-07-29 13:00:00',5,'Прием завершен',1,5,5),(6,'2024-08-31 14:00:00',6,'Запись назначена',3,6,6),(7,'2024-05-15 15:00:00',7,'Запись отменена',2,7,7);
 /*!40000 ALTER TABLE `appointments` ENABLE KEYS */;
 UNLOCK TABLES;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `DuplicateAppointments` BEFORE INSERT ON `appointments` FOR EACH ROW BEGIN
-    DECLARE appointment_count INT;
-    
-    SELECT COUNT(*) INTO appointment_count
-    FROM appointments
-    WHERE dateTime = NEW.dateTime
-    AND doctors_id = NEW.doctors_id;
-    
-    IF appointment_count > 0 THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Запись уже существует';
-    END IF;
-END */;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `doctors`
@@ -263,7 +237,6 @@ DROP TABLE IF EXISTS `services_reports`;
 CREATE TABLE `services_reports` (
   `id` int NOT NULL AUTO_INCREMENT,
   `date` datetime NOT NULL,
-  `services` varchar(100) NOT NULL,
   `notes` varchar(255) NOT NULL,
   `doctors_id` int NOT NULL,
   `services_id` int NOT NULL,
@@ -281,7 +254,7 @@ CREATE TABLE `services_reports` (
 
 LOCK TABLES `services_reports` WRITE;
 /*!40000 ALTER TABLE `services_reports` DISABLE KEYS */;
-INSERT INTO `services_reports` VALUES (1,'2024-04-15 00:00:00','Протеза глаза \"Cognitive interface prosthesis system\"','Операция прошла успешно, пациент себя чувствует хорошо, рекомендован курс реабилитации.',1,1),(2,'2024-05-18 00:00:00','Установка мозгового чипа \"Computer-Assisted Social Interaction Enchanced (C.A.S.I.E.)\"','Пациенту требуется последующее наблюдение и курс восстановительных мероприятий.',2,2),(3,'2024-06-20 00:00:00','Установка протеза кисти \"Isoiay\"','Ожидается полное восстановление функций кисти, а так же необходимо пройти курс реабилитации.',3,3),(4,'2024-07-22 00:00:00','Установка аугментированного интеллектуального нейроинтерфейса \"SmartVision X4\"','Процесс адаптации к новым возможностям проходит без осложнений.',4,4),(5,'2024-08-25 00:00:00','Нейро-сетевой интерфейс \"NeuralLink Pro\"','Пациент замечает улучшения в памяти и внимании после установки интерфейса.',5,5),(6,'2024-09-25 00:00:00','Бионическая рука \"TitanArm Mk.II\"','Процесс адаптации проходит успешно, все функции работают в норме',7,9),(7,'2024-10-16 00:00:00','Аугментация глаз \"Кибернетический протез глаза: \"Cognitive interface prosthesis system\"','Пациент четко видит слова на расстоянии более 500 метров, оттаржения не наблюдается',1,5),(8,'2024-11-19 00:00:00','Наноимплантация мозгового чипа: \"Computer-Assisted Social Interaction Enchanced (C.A.S.I.E.)\"','Требуется дополнительная исследовательская работа для оптимизации параметров.',2,3),(9,'2024-12-21 00:00:00','Установка кибернетического протеза сердца \"Синтетический Эндокринный Сердечный Агрегат\"','Наблюдается улучшение функций сердца после процедуры.',4,9),(10,'2024-12-23 00:00:00','Аугментация конечности \"Титановый Рукав\"','Наблюдается значительное увеличение мобильности после процедуры.',1,8);
+INSERT INTO `services_reports` VALUES (1,'2024-04-15 00:00:00','Операция прошла успешно, пациент себя чувствует хорошо, рекомендован курс реабилитации.',1,1),(2,'2024-05-18 00:00:00','Пациенту требуется последующее наблюдение и курс восстановительных мероприятий.',2,2),(3,'2024-06-20 00:00:00','Ожидается полное восстановление функций кисти, а так же необходимо пройти курс реабилитации.',3,3),(4,'2024-07-22 00:00:00','Процесс адаптации к новым возможностям проходит без осложнений.',4,4),(5,'2024-08-25 00:00:00','Пациент замечает улучшения в памяти и внимании после установки интерфейса.',5,5),(6,'2024-09-25 00:00:00','Процесс адаптации проходит успешно, все функции работают в норме',7,9),(7,'2024-10-16 00:00:00','Пациент четко видит слова на расстоянии более 500 метров, оттаржения не наблюдается',1,5),(8,'2024-11-19 00:00:00','Требуется дополнительная исследовательская работа для оптимизации параметров.',2,3),(9,'2024-12-21 00:00:00','Наблюдается улучшение функций сердца после процедуры.',4,9),(10,'2024-12-23 00:00:00','Наблюдается значительное увеличение мобильности после процедуры.',1,8);
 /*!40000 ALTER TABLE `services_reports` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -300,124 +273,6 @@ SET @saved_cs_client     = @@character_set_client;
  1 AS `service`,
  1 AS `notes`*/;
 SET character_set_client = @saved_cs_client;
-
---
--- Dumping events for database 'prothesis'
---
-
---
--- Dumping routines for database 'prothesis'
---
-/*!50003 DROP FUNCTION IF EXISTS `GetTotalAppointments` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` FUNCTION `GetTotalAppointments`(patient_id INT) RETURNS int
-    DETERMINISTIC
-BEGIN
-    DECLARE total_appointments INT;
-    
-    SELECT COUNT(*) INTO total_appointments
-    FROM appointments
-    WHERE patients_id = patient_id;
-    
-    RETURN total_appointments;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `addAppointment` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `addAppointment`(
-    IN p_patient_id INT,
-    IN p_doctor INT,
-    IN p_service INT,
-    IN p_date DATETIME,
-    IN p_room INT
-)
-BEGIN
-    DECLARE appointment_id INT;
-
-    INSERT INTO appointments (dateTime, room, status, patients_id, doctors_id, services_id)
-    VALUES (p_date, p_room, 'Запись назначена', p_patient_id, p_doctor, p_service);
-
-    SET appointment_id = LAST_INSERT_ID();
-
-    SELECT 'Вы успешно записались на прием' AS Message;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `NewPatient` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `NewPatient`(
-    IN p_fullName VARCHAR(255),
-    IN p_birthday DATE,
-    IN p_gender CHAR(1),
-    IN p_phone CHAR(12),
-    IN p_email VARCHAR(100)
-)
-BEGIN
-    DECLARE v_patientExists INT;
-    DECLARE EXIT HANDLER FOR SQLEXCEPTION
-    BEGIN
-        ROLLBACK;
-        GET DIAGNOSTICS CONDITION 1 @p1 = RETURNED_SQLSTATE, @p2 = MESSAGE_TEXT;
-        SELECT CONCAT('Error occurred: ', @p1, ': ', @p2);
-    END;
-    
-    START TRANSACTION;
-    
-    SELECT COUNT(*) INTO v_patientExists 
-    FROM Patients 
-    WHERE fullName = p_fullName 
-    AND birthday = p_birthday 
-    AND gender = p_gender 
-    AND phone = p_phone 
-    AND email = p_email;
-    
-    IF v_patientExists = 0 THEN
-        INSERT INTO Patients (fullName, birthday, gender, phone, email)
-        VALUES (p_fullName, p_birthday, p_gender, p_phone, p_email);
-        
-        COMMIT;
-        SELECT 'Клиент успешно добавлен';
-    ELSE
-        ROLLBACK;
-        SELECT 'Клиент уже существует';
-    END IF;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Final view structure for view `view_operations`
@@ -446,4 +301,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-16 13:20:16
+-- Dump completed on 2024-06-11 20:55:54
