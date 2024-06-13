@@ -346,36 +346,22 @@ DELIMITER ;
 ```sql 
 DELIMITER $$
 
-CREATE PROCEDURE addAppointment(
-    IN p_patient_id INT,
-    IN p_doctor INT,
-    IN p_service INT,
-    IN p_date DATETIME,
-    IN p_room INT
-)
+CREATE TRIGGER DuplicateAppointments
+BEFORE INSERT ON appointments
+FOR EACH ROW
 BEGIN
-    DECLARE appointment_id INT;
-    DECLARE error_message VARCHAR(255) DEFAULT NULL;
-
-    IF EXISTS (
-        SELECT * FROM appointments 
-        WHERE dateTime = p_date 
-        AND doctors_id = p_doctor
-    ) THEN
-        SET error_message = 'Вы не можете записаться на прием в это время, так как у данного врача уже есть запись.';
-    ELSE
-        INSERT INTO appointments (dateTime, room, status, patients_id, doctors_id, services_id)
-        VALUES (p_date, p_room, 'Запись назначена', p_patient_id, p_doctor, p_service);
-
-        SET appointment_id = LAST_INSERT_ID();
+    DECLARE appointment_count INT;
+    
+    SELECT COUNT(*) INTO appointment_count
+    FROM appointments
+    WHERE dateTime = NEW.dateTime
+    AND doctors_id = NEW.doctors_id;
+    
+    IF appointment_count > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Запись уже существует';
     END IF;
-
-    IF error_message IS NOT NULL THEN
-        SELECT error_message AS Message;
-    ELSE
-        SELECT 'Вы успешно записались на прием' AS Message;
-    END IF;
-END $$
+END$$
 
 DELIMITER ;
 ```
