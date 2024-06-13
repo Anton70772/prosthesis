@@ -242,6 +242,33 @@ JOIN patients ON services.id = patients.id
 ;
 ```
 
+## Хранимая процедура для создания отчета:
+```sql
+DELIMITER $$
+
+CREATE PROCEDURE create_report(
+	IN p_date DATETIME, 
+	IN p_notes VARCHAR(255), 
+	IN p_doctors_id INT, 
+	IN p_services_id INT, 
+	IN p_patients_id INT
+)
+BEGIN
+    INSERT INTO services_reports (date, notes, doctors_id, services_id, patients_id)
+    VALUES (p_date, p_notes, p_doctors_id, p_services_id, p_patients_id);
+
+    UPDATE appointments
+    SET status = 'Прием завершен'
+    WHERE patients_id = p_patients_id AND doctors_id = p_doctors_id AND services_id = p_services_id;
+END $$
+
+DELIMITER ;
+```
+### Вызов процедуры:
+```sql
+call protez.create_report('2024-07-07 17:30:00', 'По результатам консультации операция для пациента отложена ещё на 2 недели из за высокого риска отторжения импланта.', 1, 1, 1);
+```
+
 ## Хранимая процедура для добавления нового клиента:
 ```sql
 DELIMITER $$
