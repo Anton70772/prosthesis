@@ -230,6 +230,7 @@ SELECT services_reports.date,
 doctors.fullName AS doctor, 
 patients.fullName AS patient, 
 services.name AS service, 
+services_reports.patients_id,
 services_reports.notes
 
 FROM services_reports
