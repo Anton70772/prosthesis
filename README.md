@@ -1,5 +1,5 @@
 # База данных для клиники протезирования
-![img](https://github.com/Anton70772/prosthesis/blob/main/prosthesis.png)
+![img](https://github.com/Anton70772/prosthesis/blob/main/protez.png)
 > [!IMPORTANT]
 > ## Как развернуть дамп бд у себя:
 * Скачать файл _prothesis.sql_
