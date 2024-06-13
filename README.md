@@ -27,7 +27,7 @@ CREATE USER IF NOT EXISTS 'admin'@'localhost' IDENTIFIED BY 'theAdmin777';
 -- Назначение роли пользователю
 GRANT admin TO 'admin'@'localhost';
 
--- Активация роли для пользователя
+-- устанавливается роль admin как роль по умолчанию для пользователя 'admin'
 SET DEFAULT ROLE admin TO 'admin'@'localhost';
 
 -- Применение изменений прав
@@ -52,7 +52,7 @@ CREATE USER IF NOT EXISTS 'medic'@'localhost' IDENTIFIED BY 'theMedic777';
 
 -- Назначение роли пользователю
 GRANT medical_staff TO 'medic'@'localhost';
--- Активация роли для пользователя
+-- устанавливается роль medical_staff как роль по умолчанию для пользователя 'medic'
 SET DEFAULT ROLE medical_staff TO 'medic'@'localhost';
 -- Применение изменений прав
 FLUSH PRIVILEGES;
@@ -74,7 +74,7 @@ CREATE USER IF NOT EXISTS 'client1'@'localhost' IDENTIFIED BY 'theClient777';
 -- Назначение роли пользователю
 GRANT client TO 'client1'@'localhost';
 
--- Активация роли для пользователя
+-- устанавливается роль client как роль по умолчанию для пользователя 'client1'
 SET DEFAULT ROLE client TO 'client1'@'localhost';
 
 -- Применение изменений прав
