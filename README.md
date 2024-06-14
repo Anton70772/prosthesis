@@ -27,7 +27,7 @@ CREATE USER IF NOT EXISTS 'admin'@'localhost' IDENTIFIED BY 'theAdmin777';
 -- Назначение роли пользователю
 GRANT admin TO 'admin'@'localhost';
 
--- Активация роли для пользователя
+-- устанавливается роль admin как роль по умолчанию для пользователя 'admin'
 SET DEFAULT ROLE admin TO 'admin'@'localhost';
 
 -- Применение изменений прав
@@ -52,7 +52,7 @@ CREATE USER IF NOT EXISTS 'medic'@'localhost' IDENTIFIED BY 'theMedic777';
 
 -- Назначение роли пользователю
 GRANT medical_staff TO 'medic'@'localhost';
--- Активация роли для пользователя
+-- устанавливается роль medical_staff как роль по умолчанию для пользователя 'medic'
 SET DEFAULT ROLE medical_staff TO 'medic'@'localhost';
 -- Применение изменений прав
 FLUSH PRIVILEGES;
@@ -67,6 +67,7 @@ CREATE ROLE IF NOT EXISTS client;
 GRANT SELECT, INSERT ON prothesis.appointments TO client;
 GRANT SELECT ON prothesis.doctors TO client;
 GRANT SELECT ON prothesis.Services TO client;
+GRANT SELECT ON prothesis.patienthistory TO client;
 
 -- Создание пользователя
 CREATE USER IF NOT EXISTS 'client1'@'localhost' IDENTIFIED BY 'theClient777';
@@ -74,7 +75,7 @@ CREATE USER IF NOT EXISTS 'client1'@'localhost' IDENTIFIED BY 'theClient777';
 -- Назначение роли пользователю
 GRANT client TO 'client1'@'localhost';
 
--- Активация роли для пользователя
+-- устанавливается роль client как роль по умолчанию для пользователя 'client1'
 SET DEFAULT ROLE client TO 'client1'@'localhost';
 
 -- Применение изменений прав
@@ -180,6 +181,16 @@ VALUES
 ('2024-07-29 13:00:00', 5, 'Прием завершен', 1, 5, 5),
 ('2024-08-31 14:00:00', 6, 'Запись назначена', 3, 6, 6),
 ('2024-05-15 15:00:00', 7, 'Запись отменена', 2, 7, 7);
+```
+
+### Для таблицы _patienthistory_:
+```sql
+INSERT INTO patienthistory (description, date, state, patients_id) VALUES
+('Консультация по замене зубных протезов', '2024-01-10', 'Назначена замена протезов', 1),
+('Изготовление моделей для будущих протезов', '2024-02-20', 'Модели изготовлены', 2),
+('Установка мостовидного протеза в верхней челюсти', '2024-03-15', 'Протез установлен, требуется адаптация', 3),
+('Контрольная проверка состояния протеза', '2024-04-25', 'Протез в хорошем состоянии', 4),
+('Регулярные осмотры и настройка протеза', '2024-05-10', 'Протез требует настройки', 5);
 ```
 
 > [!WARNING]
