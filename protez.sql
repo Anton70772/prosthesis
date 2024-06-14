@@ -156,7 +156,7 @@ CREATE TABLE `patienthistory` (
   PRIMARY KEY (`id`),
   KEY `fk_patientHistory_patients1_idx` (`patients_id`),
   CONSTRAINT `fk_patientHistory_patients1` FOREIGN KEY (`patients_id`) REFERENCES `patients` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -165,6 +165,7 @@ CREATE TABLE `patienthistory` (
 
 LOCK TABLES `patienthistory` WRITE;
 /*!40000 ALTER TABLE `patienthistory` DISABLE KEYS */;
+INSERT INTO `patienthistory` VALUES (1,'Консультация по замене протеза кисти','2024-01-10','Назначена замена протеза',1),(2,'Изготовление моделей для будущих протезов','2024-02-20','Модели изготовлены',2),(3,'Установка протеза руки','2024-03-15','Протез установлен, требуется адаптация',3),(4,'Контрольная проверка состояния протеза','2024-04-25','Протез в хорошем состоянии',4),(5,'Регулярные осмотры и настройка протеза','2024-05-10','Протез требует настройки',5);
 /*!40000 ALTER TABLE `patienthistory` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -480,4 +481,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-13 12:30:45
+-- Dump completed on 2024-06-14  8:41:59
