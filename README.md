@@ -14,7 +14,7 @@
 > ## В бд есть 3 роли:
 ### *Администратор*:
 
-```javascript
+```go
 -- Создание роли Администратор
 CREATE ROLE IF NOT EXISTS admin; 
 
