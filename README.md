@@ -14,7 +14,7 @@
 > ## В бд есть 3 роли:
 ### *Администратор*:
 
-```typescript
+```TypeScript
 -- Создание роли Администратор
 CREATE ROLE IF NOT EXISTS admin; 
 
