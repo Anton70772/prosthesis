@@ -330,30 +330,6 @@ DELIMITER ;
 call prosthesis.AddNewPatient('Иванов Иван Иванович', '2004-07-19', 'М', '+79308361724', 'ivanov@yandex.ru');
 ```
 
-## Триггер для хранимой процедуры записи на прием:
-```sql 
-DELIMITER $$
-
-CREATE TRIGGER DuplicateAppointments
-BEFORE INSERT ON appointments
-FOR EACH ROW
-BEGIN
-    DECLARE appointment_count INT;
-    
-    SELECT COUNT(*) INTO appointment_count
-    FROM appointments
-    WHERE dateTime = NEW.dateTime
-    AND doctors_id = NEW.doctors_id;
-    
-    IF appointment_count > 0 THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Запись уже существует';
-    END IF;
-END$$
-
-DELIMITER ;
-```
-
 ## Хранимая процедура для записи на прием:
 ```sql 
 DELIMITER $$
@@ -375,6 +351,30 @@ BEGIN
 
     SELECT 'Вы успешно записались на прием' AS Message;
 END $$
+
+DELIMITER ;
+```
+
+## Триггер для хранимой процедуры записи на прием:
+```sql 
+DELIMITER $$
+
+CREATE TRIGGER DuplicateAppointments
+BEFORE INSERT ON appointments
+FOR EACH ROW
+BEGIN
+    DECLARE appointment_count INT;
+    
+    SELECT COUNT(*) INTO appointment_count
+    FROM appointments
+    WHERE dateTime = NEW.dateTime
+    AND doctors_id = NEW.doctors_id;
+    
+    IF appointment_count > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Запись уже существует';
+    END IF;
+END$$
 
 DELIMITER ;
 ```
